@@ -17,8 +17,15 @@ public class JavaScriptExecutor implements CodeExecutor{
         // 실행 단계
         ProcessBuilder builder = new ProcessBuilder(
                 "docker", "run", "--rm",
-                "-v", tempDir.toAbsolutePath() + ":/app",
-                "node:20", "node", "/app/script.js"
+                "--network", "none",
+                "--memory", "128m",
+                "--cpus", "0.5",
+                "--read-only",
+                "--pids-limit", "50",
+                "--cap-drop", "ALL",
+                "--security-opt", "no-new-privileges",
+                "-v", tempDir.toAbsolutePath() + ":/app:ro",
+                "node:20", "sh", "-c", "timeout 10 node /app/script.js"
         );
 
         builder.redirectErrorStream(true);

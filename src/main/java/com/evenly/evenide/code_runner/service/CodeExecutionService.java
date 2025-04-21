@@ -24,6 +24,13 @@ public class CodeExecutionService {
         }
 
         String result = executor.execute(requestDto.getContent());
-        return new CodeExecutionResponse(result);
+
+        boolean success = !(result.toLowerCase().contains("exception")
+                || result.toLowerCase().contains("error")
+                || result.toLowerCase().contains("caused by")
+                || result.toLowerCase().contains("killed")
+                || result.trim().isEmpty());
+
+        return new CodeExecutionResponse(success, result);
     }
 }

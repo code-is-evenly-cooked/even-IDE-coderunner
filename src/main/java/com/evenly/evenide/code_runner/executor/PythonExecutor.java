@@ -17,8 +17,15 @@ public class PythonExecutor implements CodeExecutor {
         // 실행 단계
         ProcessBuilder builder = new ProcessBuilder(
                 "docker", "run", "--rm",
-                "-v", tempDir.toAbsolutePath() + ":/app",
-                "python:3.12", "python", "/app/script.py"
+                "--network", "none",
+                "--memory", "128m",
+                "--cpus", "0.5",
+                "--read-only",
+                "--pids-limit", "50",
+                "--cap-drop", "ALL",
+                "--security-opt", "no-new-privileges",
+                "-v", tempDir.toAbsolutePath() + ":/app:ro",
+                "python:3.12", "sh", "-c", "timeout 10 python /app/script.py"
         );
 
         builder.redirectErrorStream(true);
