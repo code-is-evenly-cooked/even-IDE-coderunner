@@ -6,5 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class CodeExecutionResponse {
-    private String result;
+    private final boolean success;
+    private final String result;
 }
