@@ -17,6 +17,13 @@ public class JavaExecutor implements CodeExecutor {
         // 컴파일 단계
         ProcessBuilder compileBuilder = new ProcessBuilder(
                 "docker", "run", "--rm",
+                "--network", "none",
+                "--memory", "128m",
+                "--cpus", "0.5",
+                "--read-only",
+                "--pids-limit", "50",
+                "--cap-drop", "ALL",
+                "--security-opt", "no-new-privileges",
                 "-v", tempDir.toAbsolutePath() + ":/app",
                 "java-runner", "sh", "-c", "javac /app/Main.java"
         );
@@ -27,8 +34,15 @@ public class JavaExecutor implements CodeExecutor {
         // 실행 단계
         ProcessBuilder runBuilder = new ProcessBuilder(
                 "docker", "run", "--rm",
-                "-v", tempDir.toAbsolutePath() + ":/app",
-                "java-runner", "sh", "-c", "java -cp /app Main"
+                "--network", "none",
+                "--memory", "128m",
+                "--cpus", "0.5",
+                "--read-only",
+                "--pids-limit", "50",
+                "--cap-drop", "ALL",
+                "--security-opt", "no-new-privileges",
+                "-v", tempDir.toAbsolutePath() + ":/app:ro",
+                "java-runner", "sh", "-c", "timeout 10 java -cp /app Main"
         );
 
 
